@@ -26,10 +26,8 @@ class ContactoController extends AbstractController
 
 
     /**
-
-* @Route("/contacto/{codigo}", name="ficha_contacto")
-
-*/
+    * @Route("/contacto/{codigo}", name="ficha_contacto")
+    */
     public function ficha($codigo): Response
     {
         //Si no existe el elemento con dicho codigo, se devuelve null
@@ -48,22 +46,7 @@ class ContactoController extends AbstractController
             }
         );
 
-        if (count($resultados)){
-            $html = "<ul>";
-            foreach ($resultados as $id => $resultado){
-                $html .= "<li>$id</li>" ;
-                $html .= "<li>" . $resultado['nombre'] . "</li>" ;
-                $html .= "<li>" . $resultado['telefono'] . "</li>" ;
-                $html .= "<li>" . $resultado['email'] . "</li>" ;
-            }
-            $html .="</ul>";
-
-
-            return new Response("<html><body>$html</body></html>");
-        } else {
-
-            return new Response("<html><body>No se ha encontrado ningún contacto</body></html>");
-        }
+        return $this->render('contacto/listaContactos.html.twig', ['contactos' => $resultados]);
     }
 
 
