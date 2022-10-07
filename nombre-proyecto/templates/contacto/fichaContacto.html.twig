@@ -1,22 +1,21 @@
 <!doctype html>
-
 <html>
+    <meta charset="utf-8">
+    <body>
+        <h1>Ficha del contacto</h1>
+        {% if contacto %}
+            <ul>
 
-<meta charset="utf-8">
+                <li><strong>{{ contacto.nombre}}</strong></li>
 
-<body>
+                <li><strong>Teléfono: </strong>{{ contacto.telefono}}</li>
 
-    <h1>Ficha del contacto</h1>
+                <li><strong>Correo: </strong>{{ contacto.email}}</li>
 
-    <ul>
-
-        <li><strong>{{ contacto.nombre}}</strong></li>
-
-        <li><strong>Teléfono: </strong>{{ contacto.telefono}}</li>
-
-        <li><strong>Correo: </strong>{{ contacto.email}}</li>
-
-    </ul>
+            </ul>
+        {% else %}
+            <p>contacto no encontrado</p>
+        {% endif %}
 
 </body>
 

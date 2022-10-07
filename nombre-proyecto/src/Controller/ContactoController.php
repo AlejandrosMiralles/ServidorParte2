@@ -35,15 +35,8 @@ class ContactoController extends AbstractController
         //Si no existe el elemento con dicho codigo, se devuelve null
         $resultado = ($this->contactos[$codigo] ?? null);
 
-        if ($resultado){
+        return $this->render('contacto/fichaContacto.html.twig', ['contacto' => $resultado]);
 
-            return $this->render('contacto/fichaContacto.html.twig', ['contacto' => $resultado]);
-        
-        } else {
-
-            return new Response("<html><body>Contacto $codigo no encontrado</body></html>");
-
-        }
     }
 
     #[Route('/contacto/buscar/{texto}', name: 'buscar_contacto')]
