@@ -8,9 +8,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class InicioController extends AbstractController
 {
-    #[Route('/', name: 'app_inicio')]
-    public function index(): Response
+    #[Route('/', name: 'inicio')]
+    public function inicio()
     {
-        return new Response("Bienvenido a la nueva pagina de contactos");
+        return $this->render('inicio.html.twig');
     }
 }

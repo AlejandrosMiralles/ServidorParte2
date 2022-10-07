@@ -30,27 +30,20 @@ class ContactoController extends AbstractController
 * @Route("/contacto/{codigo}", name="ficha_contacto")
 
 */
-    public function ficha($codigo = 1): Response
+    public function ficha($codigo): Response
     {
         //Si no existe el elemento con dicho codigo, se devuelve null
-        $resultado = $this->contactos[$codigo] ?? null;
+        $resultado = ($this->contactos[$codigo] ?? null);
 
         if ($resultado){
-            $html = "<ul>";
-                $html .= "<li>$codigo</li>" ;
-                $html .= "<li>" . $resultado['nombre'] . "</li>" ;
-                $html .= "<li>" . $resultado['telefono'] . "</li>" ;
-                $html .= "<li>" . $resultado['email'] . "</li>" ;
-            $html .= "</ul>";
 
-
-        return new Response("<html><body>$html</body></html>");
+            return $this->render('contacto/fichaContacto.html.twig', ['contacto' => $resultado]);
+        
         } else {
 
             return new Response("<html><body>Contacto $codigo no encontrado</body></html>");
-        }
 
-        return new Response("Datos de contacto con nuevos codigo $codigo");
+        }
     }
 
     #[Route('/contacto/buscar/{texto}', name: 'buscar_contacto')]
