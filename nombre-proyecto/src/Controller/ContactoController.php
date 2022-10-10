@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Contacto;
 use Doctrine\Persistence\ManagerRegistry ;
 
+
 class ContactoController extends AbstractController
 
 {
@@ -30,25 +31,26 @@ class ContactoController extends AbstractController
     /**
     * @Route("/contacto/ficha/{codigo}", name="ficha_contacto")
     */
-    public function ficha($codigo): Response
+    public function ficha(ManagerRegistry $doctrine, $codigo): Response
     {
-        //Si no existe el elemento con dicho codigo, se devuelve null
-        $resultado = ($this->contactos[$codigo] ?? null);
+        $repositorio = $doctrine->getRepository(Contacto::class);
+        $contacto = $repositorio->find($codigo);
 
-        return $this->render('contacto/fichaContacto.html.twig', ['contacto' => $resultado]);
+        return $this->render('contacto/fichaContacto.html.twig', ['contacto' => $contacto]);
 
     }
 
     #[Route('/contacto/buscar/{texto}', name: 'buscar_contacto')]
-    public function buscar($texto): Response
+    public function buscar(ManagerRegistry $doctrine, $texto): Response
     {
         //Se filtran los usuarios que existan de los que no
-        $resultados = array_filter($this->contactos, function($contacto) use ($texto){
-                return strpos($contacto["nombre"], $texto) !== FALSE;
-            }
-        );
+        $repositorio = $doctrine->getRepository(Contacto::class);
 
-        return $this->render('contacto/listaContactos.html.twig', ['contactos' => $resultados]);
+        /* @warning */
+        $contactos = $repositorio->findByNombre('Ma');
+
+
+        return $this->render('contacto/listaContactos.html.twig', ['contactos' => $contactos]);
     }
 
     #[Route('/contacto/insertar', name: 'insertar_contacto')]
@@ -60,6 +62,8 @@ class ContactoController extends AbstractController
             $contacto->setTelefono($c["telefono"]);
             $contacto->setEmail($c["email"]);
             $entityManager->persist($contacto);
+
+
         }
 
         try {

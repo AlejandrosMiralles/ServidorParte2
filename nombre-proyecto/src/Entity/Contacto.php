@@ -14,7 +14,7 @@ class Contacto
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $Nombre = null;
+    private ?string $nombre = null;
 
     #[ORM\Column(length: 15)]
     private ?string $telefono = null;
@@ -29,12 +29,12 @@ class Contacto
 
     public function getNombre(): ?string
     {
-        return $this->Nombre;
+        return $this->nombre;
     }
 
-    public function setNombre(string $Nombre): self
+    public function setNombre(string $nombre): self
     {
-        $this->Nombre = $Nombre;
+        $this->nombre = $nombre;
 
         return $this;
     }

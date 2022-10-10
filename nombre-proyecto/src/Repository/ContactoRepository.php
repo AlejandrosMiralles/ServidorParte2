@@ -63,4 +63,12 @@ class ContactoRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findByNombre($text): array {
+        $qb = $this->createQueryBuilder('c')->andWhere('c.nombre LIKE :text')
+                                            ->setParameter('text', '%' . $text . '%')
+                                            ->getQuery();
+        return $qb->execute();
+    }
+    
 }
