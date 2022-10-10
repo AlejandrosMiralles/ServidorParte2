@@ -6,6 +6,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+use App\Entity\Contacto;
+use Doctrine\Persistence\ManagerRegistry ;
+
 class ContactoController extends AbstractController
 
 {
@@ -24,9 +27,8 @@ class ContactoController extends AbstractController
 
     ]; 
 
-
     /**
-    * @Route("/contacto/{codigo}", name="ficha_contacto")
+    * @Route("/contacto/ficha/{codigo}", name="ficha_contacto")
     */
     public function ficha($codigo): Response
     {
@@ -49,5 +51,24 @@ class ContactoController extends AbstractController
         return $this->render('contacto/listaContactos.html.twig', ['contactos' => $resultados]);
     }
 
+    #[Route('/contacto/insertar', name: 'insertar_contacto')]
+    public function insertar(ManagerRegistry $doctrine){
+        $entityManager = $doctrine -> getManager();
+        foreach($this->contactos as $c){
+            $contacto = new Contacto();
+            $contacto->setNombre($c["nombre"]);
+            $contacto->setTelefono($c["telefono"]);
+            $contacto->setEmail($c["email"]);
+            $entityManager->persist($contacto);
+        }
+
+        try {
+            //Con un flush sólo se confirman todas las operaciones
+            $entityManager->flush();
+            return new Response("Contactos insertados");
+        } catch (\Exception $e){
+            return new Response("Error insertando objetos");
+        }
+    }
 
 }
