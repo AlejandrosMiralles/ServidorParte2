@@ -75,4 +75,9 @@ class ContactoController extends AbstractController
         }
     }
 
+
+    #[Route('/contacto/update/{id}/{nombre}', name: 'modificar_contacto')]
+    public function update(ManagerRegistry $doctrine, $id, $nombre): Responde{
+        
+    }
 }
