@@ -77,7 +77,20 @@ class ContactoController extends AbstractController
 
 
     #[Route('/contacto/update/{id}/{nombre}', name: 'modificar_contacto')]
-    public function update(ManagerRegistry $doctrine, $id, $nombre): Responde{
-        
+    public function update(ManagerRegistry $doctrine, $id, $nombre): Response{
+        $entityManager = $doctrine->getManager();
+        $repositorio = $doctrine->getRepository(Contacto::class);
+        $contacto = $repositorio->find($id);
+        if(! $contacto){
+            return $this->render('ficha_contacto.html.twig', [ 'contacto'=>null]);
+        }
+
+        $contacto->setNombre($nombre);
+        try{
+            $entityManager->flush();
+            return $this->render('ficha_contacto.html.twig', ['contacto' => $contacto]);
+        } catch (\Exception $e){
+            return new Response("Error insertando objetos");
+        }
     }
 }
