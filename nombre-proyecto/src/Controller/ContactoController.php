@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 use App\Entity\Contacto;
+use App\Entity\Provincia;
 use Doctrine\Persistence\ManagerRegistry ;
 
 
@@ -41,8 +42,7 @@ class ContactoController extends AbstractController
     }
 
     #[Route('/contacto/buscar/{texto}', name: 'buscar_contacto')]
-    public function buscar(ManagerRegistry $doctrine, $texto): Response
-    {
+    public function buscar(ManagerRegistry $doctrine, $texto): Response{
         //Se filtran los usuarios que existan de los que no
         $repositorio = $doctrine->getRepository(Contacto::class);
 
@@ -111,4 +111,60 @@ class ContactoController extends AbstractController
             return new Response("Error eliminando objeto");
         }
     }
+
+
+    #[Route('/contacto/insertarConProvincia', name: 'insertar_con_provincia_contacto')]
+    public function insertarConProvincia(ManagerRegistry $doctrine){
+        $entityManager = $doctrine -> getManager();
+        $provincia = new Provincia();
+
+        $provincia->setNombre("Alicante");
+        $contacto = new Contacto();
+
+        $contacto->setNombre("inserción de prueba con provincia");
+        $contacto->setTelefono("3453453455");
+        $contacto->setEmail("insercion.de.prueba.provicnia@contacto.es");
+        $contacto->setProvincia($provincia);
+        
+        $entityManager->persist($provincia);
+        $entityManager->persist($contacto);
+
+        
+
+        try {
+            //Con un flush sólo se confirman todas las operaciones
+            $entityManager->flush();
+            return $this->render("contacto/fichaContacto.html.twig", ['contacto' => $contacto]);
+        } catch (\Exception $e){
+            return new Response("Error insertando objetos:\n$e");
+        }
+    }
+
+    #[Route('/contacto/insertarSinProvincia', name: 'insertar_sin_provincia_contacto')]
+    public function insertarSinProvincia(ManagerRegistry $doctrine){
+        $entityManager = $doctrine -> getManager();
+        $repositorio = $doctrine->getRepository(Provincia::class);
+
+        $provincia = $repositorio->findOneBy(["nombre"=>"Alicante"]);
+        $contacto = new Contacto();
+
+        $contacto->setNombre("inserción de prueba con provincia");
+        $contacto->setTelefono("95234234234255");
+        $contacto->setEmail("insercion.de.prueba.provicnia@contacto.es");
+        $contacto->setProvincia($provincia);
+        
+        $entityManager->persist($provincia);
+        $entityManager->persist($contacto);
+
+        
+
+        try {
+            //Con un flush sólo se confirman todas las operaciones
+            $entityManager->flush();
+            return $this->render("contacto/fichaContacto.html.twig", ['contacto' => $contacto]);
+        } catch (\Exception $e){
+            return new Response("Error insertando objetos");
+        }
+    }
+
 }
