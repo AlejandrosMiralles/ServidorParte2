@@ -9,7 +9,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Contacto;
 use App\Entity\Provincia;
 use Doctrine\Persistence\ManagerRegistry ;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class ContactoController extends AbstractController
 
@@ -166,5 +170,23 @@ class ContactoController extends AbstractController
             return new Response("Error insertando objetos");
         }
     }
+
+    #[Route('/contacto/nuevo', name: "nuevo_contacto")]
+    public function nuevo(){
+        $contacto = new Contacto();
+
+        $formulario=  $this->createFormBuilder($contacto)
+                        ->add('nombre', TextType::class)
+                        ->add('telefono', TextType::class)
+                        ->add('email', TextType::class, array('label'=>'Correo electronico'))
+                        ->add('provincia', EntityType::class, array('class'=>Provincia::class, 
+                                                            'choice_label'=> 'nombre'))
+                        ->add('save', SubmitType::class, array('label'=> 'enviar'))
+                        ->getForm();
+        
+        return $this->render('contacto/nuevo.html.twig', array('formulario' => $formulario->createView()));
+    
+        }
+
 
 }
