@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 use App\Entity\Contacto;
 use App\Entity\Provincia;
+use App\Form\ContactoType;
 use Doctrine\Persistence\ManagerRegistry ;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -177,14 +178,8 @@ class ContactoController extends AbstractController
     public function nuevo(ManagerRegistry $doctrine, Request $request){
         $contacto = new Contacto();
 
-        $formulario=  $this->createFormBuilder($contacto)
-                        ->add('nombre', TextType::class)
-                        ->add('telefono', TextType::class)
-                        ->add('email', EmailType::class, array('label'=>'Correo electronico'))
-                        ->add('provincia', EntityType::class, array('class'=>Provincia::class, 
-                                                            'choice_label'=> 'nombre'))
-                        ->add('save', SubmitType::class, array('label'=> 'enviar'))
-                        ->getForm();
+        $formulario=  $this->createForm(ContactoType::class, $contacto);
+                    
         $formulario->handleRequest($request);
 
         if($formulario->isSubmitted() && $formulario->isValid()){
@@ -209,14 +204,8 @@ class ContactoController extends AbstractController
         $repositorio = $doctrine->getRepository(Contacto::class);
         $contacto = $repositorio->find($codigo);
 
-        $formulario=  $this->createFormBuilder($contacto)
-                        ->add('nombre', TextType::class)
-                        ->add('telefono', TextType::class)
-                        ->add('email', EmailType::class, array('label'=>'Correo electronico'))
-                        ->add('provincia', EntityType::class, array('class'=>Provincia::class, 
-                                                            'choice_label'=> 'nombre'))
-                        ->add('save', SubmitType::class, array('label'=> 'enviar'))
-                        ->getForm();
+        
+        $formulario=  $this->createForm(ContactoType::class, $contacto);
         $formulario->handleRequest($request);
 
         if($formulario->isSubmitted() && $formulario->isValid()){
@@ -225,7 +214,7 @@ class ContactoController extends AbstractController
             $entityManager->persist($contacto);
             $entityManager->flush();
         }
-        
+
         return $this->render('contacto/editar.html.twig', array('formulario' => $formulario->createView()));
     
     }
