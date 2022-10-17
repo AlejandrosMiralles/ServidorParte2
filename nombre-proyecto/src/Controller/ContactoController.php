@@ -54,7 +54,7 @@ class ContactoController extends AbstractController
         $repositorio = $doctrine->getRepository(Contacto::class);
 
         /* @warning */
-        $contactos = $repositorio->findByNombre('Ma');
+        $contactos = $repositorio->findByNombre($texto);
 
 
         return $this->render('contacto/listaContactos.html.twig', ['contactos' => $contactos]);
